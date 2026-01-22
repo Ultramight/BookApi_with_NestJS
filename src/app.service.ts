@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
+import { Libro, LIBRI } from './fakedatabase';
 
 @Injectable()
-export class AppService {
-  getHello(): string {
-    return 'Hello World!';
+export class LibriService {
+  getTuttiLibri(): Libro[] {
+    return LIBRI;
   }
 }
