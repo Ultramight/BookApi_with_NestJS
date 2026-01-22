@@ -1,12 +1,24 @@
 import { Injectable } from '@nestjs/common';
-import { Libro, LIBRI } from './fakedatabase';
+import { Book, books } from './fakedatabase';
 
 @Injectable()
-export class LibriService {
-  getTuttiLibri(): Libro[] {
-    return LIBRI;
+export class BooksService {
+  getAllBooks(): Book[] {
+    return books;
   }
-  cerca_ID(Id_Libro: number): Libro | undefined {
-    return LIBRI.find((libro) => libro.id === Id_Libro);
+  findById(bookId: number): Book | undefined {
+    return books.find((book) => book.id === bookId);
+  }
+  create(book: Partial<Book>): Book {
+    const newID = books[books.length - 1].id + 1;
+
+    const newBook: Book = {
+      id: newID,
+      author: book.author ?? '',
+      title: book.title ?? '',
+      publicationYear: book.publicationYear ?? 0,
+    };
+    books.push(newBook);
+    return newBook;
   }
 }

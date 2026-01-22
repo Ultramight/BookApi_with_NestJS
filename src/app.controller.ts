@@ -1,21 +1,31 @@
-import { Controller, Get, Param } from '@nestjs/common';
-import { LibriService } from './app.service';
-import { Libro } from './fakedatabase';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { BooksService } from './app.service';
+import { Book } from './fakedatabase';
 
-@Controller('libri')
-export class LibriController {
-  constructor(private readonly LibriService: LibriService) {}
+@Controller('books')
+export class BooksController {
+  constructor(private readonly booksService: BooksService) {}
 
   @Get()
-  getTuttiLibri(): Libro[] {
-    return this.LibriService.getTuttiLibri();
+  getAllBooks(): Book[] {
+    return this.booksService.getAllBooks();
   }
-  /* TESTING http://localhost:3000/LIBRI/GetById/1 per trovare il libro con ID 1 
-   - importato Param nei @nestjs/common */
+  // http://localhost:3000/books/getById/1
+  @Get('getById/:id')
+  getBookById(@Param('id') id: string): Book | undefined {
+    const bookId = +id;
+    return this.booksService.findById(bookId);
+  }
+  /* Aggiunta di POST per aggiungere un Libro 
+   - import di Post e Body 
+   - inseirire libro su Postman con POST su http://localhost:3000/books 
+   - inserire JSON */
 
-  @Get('GetById/:id')
-  getLibroById(@Param('id') id: string): Libro | undefined {
-    const Id_Libro = +id;
-    return this.LibriService.cerca_ID(Id_Libro);
+  @Post()
+  addBook(@Body() book: Partial<Book>): Book | undefined {
+    const bookData = book;
+
+    if (!book.author || !book.title || !book.publicationYear) return undefined;
+    return this.booksService.create(bookData);
   }
 }
